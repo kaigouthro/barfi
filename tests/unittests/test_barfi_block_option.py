@@ -41,14 +41,12 @@ class TestBarfiBlock(unittest.TestCase):
         block_1.add_input(name='input_1')
         block_1.add_output(name='output_1')
         block_1.set_interface(name='input_1', value=5)
-        block_1.add_option(name='checkbox-option-1', type='checkbox')                
+        block_1.add_option(name='checkbox-option-1', type='checkbox')
         def block_1_func(self):
             in_1 = self.get_interface(name='input_1')
-            if (self.get_option(name='checkbox-option-1')):
-                out_1 = (in_1/2)
-            else:
-                out_1 = (in_1*2)
+            out_1 = (in_1/2) if (self.get_option(name='checkbox-option-1')) else (in_1*2)
             self.set_interface(name='output_1', value=out_1)
+
         block_1.add_compute(block_1_func)
         block_1._on_compute()
         self.assertEqual(block_1.get_interface(name='input_1'), 5)

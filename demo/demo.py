@@ -41,8 +41,9 @@ load_schema = st.selectbox('Select a saved schema:', barfi_schemas())
 
 compute_engine = st.checkbox('Activate barfi compute engine', value=False)
 
-barfi_result = st_barfi(base_blocks=[feed, result, mixer, splitter],
-                    compute_engine=compute_engine, load_schema=load_schema)
-
-if barfi_result:
+if barfi_result := st_barfi(
+    base_blocks=[feed, result, mixer, splitter],
+    compute_engine=compute_engine,
+    load_schema=load_schema,
+):
     st.write(barfi_result)

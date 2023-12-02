@@ -49,13 +49,12 @@ class Block(object):
             if name in self._interface_names:
                 raise ValueError(
                     f'name: {name} already exists as an interface to the Block.')
-            self._inputs[name] = {'value': value, 'id': None}
-            self._interface_names.append(name)
         else:
             in_nos = len(self._inputs)
-            name = 'Input ' + str(in_nos + 1)
-            self._inputs[name] = {'value': value, 'id': None}
-            self._interface_names.append(name)
+            name = f'Input {str(in_nos + 1)}'
+
+        self._inputs[name] = {'value': value, 'id': None}
+        self._interface_names.append(name)
 
     def add_output(self, name: str = None, value=None) -> None:
         """
@@ -72,13 +71,12 @@ class Block(object):
             if name in self._interface_names:
                 raise ValueError(
                     f'name: {name} already exists as an interface to the Block.')
-            self._outputs[name] = {'value': value, 'id': None}
-            self._interface_names.append(name)
         else:
             out_nos = len(self._outputs)
-            name = 'Output ' + str(out_nos + 1)
-            self._outputs[name] = {'value': value, 'id': None}
-            self._interface_names.append(name)
+            name = f'Output {str(out_nos + 1)}'
+
+        self._outputs[name] = {'value': value, 'id': None}
+        self._interface_names.append(name)
 
     def get_interface(self, name: str):
 
@@ -139,8 +137,15 @@ class Block(object):
             name, str), "Error: 'name' argument should be of type string."
         assert isinstance(
             type, str), "Error: 'type' argument should be of type string."
-        assert type in ['checkbox', 'input', 'integer', 'number', 'select', 'slider',
-                        'display'], 'Error: Option "type" is not of standard Option interface parameter.'
+        assert type in {
+            'checkbox',
+            'input',
+            'integer',
+            'number',
+            'select',
+            'slider',
+            'display',
+        }, 'Error: Option "type" is not of standard Option interface parameter.'
 
         if name in self._options:
             raise ValueError(
@@ -151,20 +156,17 @@ class Block(object):
         self._options[_option['name']] = _option
 
     def set_option(self, name: str, **kwargs):
-        # Can only set the 'value' property for now.
-        if name in self._options:
-            for arg, value in kwargs.items():
-                if arg in self._options[name]:
-                    if arg in ['value']:
-                        self._options[name][arg] = value
-                    else:
-                        raise ValueError(
-                            f'Cannot set or invalid property: {arg} for Block option.')
-                else:
-                    raise ValueError(
-                        f'Property: {arg} is not a valid option property for {name}.')
-        else:
+        if name not in self._options:
             raise ValueError(f'Option name: {name} does not exist in Block.')
+        for arg, value in kwargs.items():
+            if arg not in self._options[name]:
+                raise ValueError(
+                    f'Property: {arg} is not a valid option property for {name}.')
+            if arg in ['value']:
+                self._options[name][arg] = value
+            else:
+                raise ValueError(
+                    f'Cannot set or invalid property: {arg} for Block option.')
 
     def get_option(self, name: str):
         if name in self._options:
@@ -173,16 +175,9 @@ class Block(object):
             raise ValueError(f'Option name: {name} does not exist in Block.')
 
     def _export(self):
-        _inputs_export = []
-        _outputs_export = []
-        _options_export = []
-        for key, _ in self._inputs.items():
-            _inputs_export.append({'name': key})
-        for key, _ in self._outputs.items():
-            _outputs_export.append({'name': key})
-        for _, item in self._options.items():
-            _options_export.append(item)
-
+        _inputs_export = [{'name': key} for key, _ in self._inputs.items()]
+        _outputs_export = [{'name': key} for key, _ in self._outputs.items()]
+        _options_export = [item for _, item in self._options.items()]
         return {'name': self._name, 'inputs': _inputs_export, 'outputs': _outputs_export, 'options': _options_export}
 
     def _on_compute():

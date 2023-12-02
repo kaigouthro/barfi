@@ -32,8 +32,7 @@ def save_schema(schema_name: str, schema_data: Dict):
 def load_schema_name(schema_name: str) -> Dict:
     schemas_barfi = load_schemas()
     if schema_name in schemas_barfi['schema_names']:
-        schema = schemas_barfi['schemas'][schema_name]
-        return schema
+        return schemas_barfi['schemas'][schema_name]
     else:
         raise ValueError(
             f'Schema :{schema_name}: not found in the saved schemas')

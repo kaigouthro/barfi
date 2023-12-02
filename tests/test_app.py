@@ -12,9 +12,11 @@ barfi_schema_name = st.selectbox(
 
 compute_engine = st.checkbox('Activate barfi compute engine', value=False)
 
-barfi_result = st_barfi(base_blocks=base_blocks_category, compute_engine=compute_engine, load_schema=barfi_schema_name)
-
-if barfi_result:
+if barfi_result := st_barfi(
+    base_blocks=base_blocks_category,
+    compute_engine=compute_engine,
+    load_schema=barfi_schema_name,
+):
     st.write(barfi_result)
     st.write(barfi_result['Feed-1']['block'].get_interface('Output 1'))
     st.write(barfi_result['Feed-2']['block'].get_interface('Output 1'))
